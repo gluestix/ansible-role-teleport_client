@@ -1,0 +1,60 @@
+---
+- name: Set teleport package name
+  ansible.builtin.set_fact:
+    teleport_package_name: "teleport-{{ teleport_version }}.x86_64"
+
+- name: Modify if set to teleport_version is latest
+  ansible.builtin.set_fact:
+    teleport_package_name: "teleport.x86_64"
+  when: teleport_version == "latest"
+
+- name: Check if specified teleport version is available for install
+  ansible.builtin.shell: |
+    set -o pipefail
+    dnf list available | grep "teleport-{{ teleport_version }}"
+  register: teleport_availalbe
+  become: true
+  changed_when: false
+  failed_when: 
+  - teleport_availalbe.rc > 1
+  - teleport_availalbe.rc < 0
+
+- name: Adding Teleport repo
+  ansible.builtin.command: dnf config-manager --add-repo https://rpm.releases.teleport.dev/teleport.repo
+  when: teleport_availalbe.stdout == ""
+  notify: Remove teleport repo
+
+# may need to change this to
+# dnf --enablerepo teleport install "{{ teleport_package_name }}"
+- name: Install Teleport
+  ansible.builtin.package:
+    name: "{{ teleport_package_name }}"
+    state: present
+
+- name: Copying over config file.
+  ansible.builtin.template:
+    src: default_teleport.yaml.j2
+    dest: /etc/teleport.yaml
+    owner: root
+    group: root
+    mode: '0600'
+    force: true
+  notify: 
+  - Restart teleport
+  - Start teleport
+
+- name: Get firewall status
+  ansible.builtin.systemd:
+    name: "firewalld.service"
+  register: firewall_status
+
+# The Teleport SSH port should only be open to the Teleport server
+- name: Configure firewall when active
+  ansible.builtin.command: firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="{{ auth_server }}" port protocol="tcp" port="{{ teleport_listen_port }}" accept'
+  when: firewall_status.status.ActiveState == "active"
+  loop: "{{ teleport_auth_servers }}"
+  loop_control:
+    loop_var: auth_server
+  notify: Reload firewalld
+  register: firewalld_rule_status
+  changed_when: firewalld_rule_status.stderr is not search("ALREADY_ENABLED")

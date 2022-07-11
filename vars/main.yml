@@ -1,0 +1,25 @@
+---
+teleport_min_ansible_version: 2.9
+
+# The firewall should be turned on and Port 3022 should only be accessible from the teleport auth server
+teleport_config_firewall: true
+
+# Either manage which version is being pushed via your Red Hat Satellite
+# Content Views b/c there was an issue once where a version of teleport
+# was not compatiable with Centos 6/7 and this broke a lot of systems
+# OR manually set the version here
+teleport_version: ""
+
+teleport_auth_token: ""
+teleport_ca_pin: ""
+teleport_auth_servers:
+  - "155.33.137.15"
+
+teleport_listen_port: "3022"
+
+# Makes querying easier
+# tsh ls --query 'labels["environment"]=="dev"'
+teleport_labels_environment: "dev"
+teleport_labels_team: "it"
+
+teleport_x11_enabled: false

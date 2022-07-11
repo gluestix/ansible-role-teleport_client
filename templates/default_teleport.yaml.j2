@@ -1,0 +1,34 @@
+teleport:
+  auth_token: "{{ teleport_auth_token }}"
+  ca_pin: "{{ teleport_ca_pin }}" 
+  auth_servers: 
+{% for auth_server in teleport_auth_servers %}
+    - "{{ auth_server }}"
+{% endfor %}
+ssh_service:
+  enabled: yes
+
+  commands:
+  - name: hostname
+    command: [hostname]
+    period: 60m0s
+  
+  labels:
+    environment: "{{ teleport_labels_environment }}"
+    purpose: "{{ teleport_labels_team }}"
+  
+  listen_addr: 0.0.0.0:"{{ teleport_listen_port }}"
+
+  x11:
+    enabled: "{{ teleport_x11_enabled }}"
+
+auth_service:
+  enabled: no
+proxy_service:
+  enabled: no
+app_service:
+  enabled: no
+kubernetes_service:
+  enabled: no
+db_service:
+  enabled: no

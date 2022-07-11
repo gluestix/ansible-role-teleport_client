@@ -1,0 +1,22 @@
+---
+- name: Remove teleport repo
+  become: true
+  ansible.builtin.command: dnf config-manager --disable teleport
+
+- name: Reload firewalld
+  become: true
+  ansible.builtin.command: firewall-cmd --reload
+
+- name: Restart teleport
+  become: true
+  ansible.builtin.systemd:
+    name: teleport.service
+    state: restarted
+    daemon_reload: true
+    enabled: true
+  
+- name: Start teleport
+  ansible.builtin.systemd:
+    name: teleport.service
+    state: started
+    enabled: true

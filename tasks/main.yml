@@ -1,0 +1,33 @@
+---
+- name: Gather distribution info
+  ansible.builtin.setup:
+    gather_subset: distribution,!all,!min
+  when:
+    - ansible_distribution is not defined
+  tags:
+    - always
+
+- name: Check OS version and family
+  ansible.builtin.assert:
+    that: ansible_os_family == 'RedHat' and ansible_distribution_major_version is version_compare('8', '==')
+    msg: "This role can only be run against RHEL/CENTOS 8. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+  tags:
+    - always
+
+- name: Check ansible version
+  ansible.builtin.assert:
+    that: ansible_version.full is version_compare(teleport_min_ansible_version, '>=')
+    msg: You must use Ansible {{ teleport_min_ansible_version }} or greater
+  tags:
+    - always
+
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+  tags:
+    - always
+
+- import_tasks: teleport.yml
+  become: true
+  tags:
+    - always
