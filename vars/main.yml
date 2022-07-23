@@ -8,7 +8,7 @@ teleport_config_firewall: true
 # Content Views b/c there was an issue once where a version of teleport
 # was not compatiable with Centos 6/7 and this broke a lot of systems
 # OR manually set the version here
-teleport_version: ""
+teleport_version: "latest"
 
 teleport_auth_token: ""
 teleport_ca_pin: ""
