@@ -10,8 +10,5 @@
           - firewalld
         state: present
 
-    - name: Start firewalld
-      command: systemctl start firewalld
-
   roles:
     - role: gluestix.teleport-client
