@@ -1,7 +1,7 @@
 teleport:
   auth_token: "{{ teleport_auth_token }}"
-  ca_pin: "{{ teleport_ca_pin }}" 
-  auth_servers: 
+  ca_pin: "{{ teleport_ca_pin }}"
+  auth_servers:
 {% for auth_server in teleport_auth_servers %}
     - "{{ auth_server }}"
 {% endfor %}
@@ -12,11 +12,11 @@ ssh_service:
   - name: hostname
     command: [hostname]
     period: 60m0s
-  
+
   labels:
     environment: "{{ teleport_labels_environment }}"
     purpose: "{{ teleport_labels_team }}"
-  
+
   listen_addr: 0.0.0.0:"{{ teleport_listen_port }}"
 
   x11:
