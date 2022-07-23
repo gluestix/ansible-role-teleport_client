@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: teleport-client
+  role_name: teleport_client
   author: gluestix
   license: "license (BSD, MIT)"
   description: Install or update the teleport node service and configuration file.
