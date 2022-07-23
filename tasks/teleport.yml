@@ -49,6 +49,11 @@
     - Restart teleport
     - Start teleport
 
+- name: Get firewall status
+  ansible.builtin.systemd:
+    name: "firewalld.service"
+  register: firewall_status
+
 # The Teleport SSH port should only be open to the Teleport server
 - name: Configure firewall when active
   ansible.builtin.command: >-
@@ -56,7 +61,9 @@
     source address="{{ auth_server }}"
     port protocol="tcp"
     port="{{ teleport_listen_port }}" accept'
-  when: teleport_config_firewall
+  when:
+    - teleport_config_firewall
+    - firewall_status.status.ActiveState == "active"
   loop: "{{ teleport_auth_servers }}"
   loop_control:
     loop_var: auth_server
