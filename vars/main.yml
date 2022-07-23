@@ -23,3 +23,5 @@ teleport_labels_environment: "dev"
 teleport_labels_team: "it"
 
 teleport_x11_enabled: false
+
+teleport_repo_proxy: "_none_"

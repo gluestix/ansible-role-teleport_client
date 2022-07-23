@@ -27,6 +27,7 @@
     enabled: true
     gpgcheck: true
     gpgkey: https://rpm.releases.teleport.dev/RPM-GPG-KEY-teleport
+    proxy: "{{ teleport_repo_proxy }}"
 
 # may need to change this to
 # dnf --enablerepo teleport install "{{ teleport_package_name }}"
