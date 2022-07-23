@@ -8,6 +8,9 @@
     teleport_package_name: "teleport.x86_64"
   when: teleport_version == "latest"
 
+# This is here b/c some users may choose to serve Teleport out through
+# Red Hat Satellite, so they can control which version is installed that way
+# and so we should not add the public facing teleport repo.
 - name: Check if specified teleport version is available for install
   ansible.builtin.shell: |
     set -o pipefail
@@ -15,21 +18,25 @@
   register: teleport_availalbe
   become: true
   changed_when: false
-  failed_when: 
-  - teleport_availalbe.rc > 1
-  - teleport_availalbe.rc < 0
+  failed_when:
+    - teleport_availalbe.rc > 1
+    - teleport_availalbe.rc < 0
 
-- name: Adding Teleport repo
-  ansible.builtin.command: dnf config-manager --add-repo https://rpm.releases.teleport.dev/teleport.repo
+- name: Add Teleport repo if package is not availalbe for install
+  ansible.builtin.yum_repository:
+    name: teleport
+    description: Teleport Enterprise YUM repo
+    baseurl: https://rpm.releases.teleport.dev/
+    gpgcheck: true
+    gpgkey: https://rpm.releases.teleport.dev/RPM-GPG-KEY-teleport
+    proxy: "{{ teleport_repo_proxy }}"
+    enabled: false
   when: teleport_availalbe.stdout == ""
-  notify: Remove teleport repo
 
-# may need to change this to
-# dnf --enablerepo teleport install "{{ teleport_package_name }}"
 - name: Install Teleport
-  ansible.builtin.package:
-    name: "{{ teleport_package_name }}"
-    state: present
+  ansible.builtin.command: dnf --enablerepo teleport install -y "{{ teleport_package_name }}"
+  register: teleport_install_result
+  changed_when: teleport_install_result is not search("Nothing to do.")
 
 - name: Copying over config file.
   ansible.builtin.template:
@@ -39,9 +46,9 @@
     group: root
     mode: '0600'
     force: true
-  notify: 
-  - Restart teleport
-  - Start teleport
+  notify:
+    - Restart teleport
+    - Start teleport
 
 - name: Get firewall status
   ansible.builtin.systemd:
@@ -50,7 +57,11 @@
 
 # The Teleport SSH port should only be open to the Teleport server
 - name: Configure firewall when active
-  ansible.builtin.command: firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="{{ auth_server }}" port protocol="tcp" port="{{ teleport_listen_port }}" accept'
+  ansible.builtin.command: >-
+    firewall-cmd --permanent --add-rich-rule='rule family="ipv4"
+    source address="{{ auth_server }}"
+    port protocol="tcp"
+    port="{{ teleport_listen_port }}" accept'
   when: firewall_status.status.ActiveState == "active"
   loop: "{{ teleport_auth_servers }}"
   loop_control:

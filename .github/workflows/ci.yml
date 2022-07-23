@@ -3,14 +3,14 @@ name: CI
 'on':
   pull_request:
   push:
-    branches:
-      - master
+    brnaches:
+      - main
   schedule:
     - cron: "30 4 * * 4"
 
 defaults:
   run:
-    working-directory: 'geerlingguy.security'
+    working-directory: 'gluestix.teleport-client'
 
 jobs:
 
