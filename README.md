@@ -1,4 +1,4 @@
-[![CI](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml)
+[![CI](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml/badge.svg)](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml)
 # Ansible Role: Teleport Client
 
 An Ansible role that installs and configures [Teleport](https://goteleport.com/) SSH server access on EL 8.
