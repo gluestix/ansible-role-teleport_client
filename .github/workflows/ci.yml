@@ -4,7 +4,7 @@ name: CI
   pull_request:
   push:
     brnaches:
-    - main
+      - main
   schedule:
     - cron: "30 4 * * 4"
 
