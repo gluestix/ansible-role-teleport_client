@@ -5,7 +5,7 @@
 
   pre_tasks:
     - name: Install firewalld
-      package:
+      ansible.builtin.package:
         name:
           - firewalld
         state: present
