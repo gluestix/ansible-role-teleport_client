@@ -11,4 +11,4 @@
         state: present
 
   roles:
-    - role: gluestix.teleport
+    - role: gluestix.teleport-client

@@ -1,20 +1,14 @@
 ---
 galaxy_info:
-  author: gluestix
   role_name: teleport-client
-  description: An ansible role to install or update the teleport node service and teleport config on EL systems.
-
-  license: MIT
-
+  author: gluestix
+  license: "license (BSD, MIT)"
+  description: Install or update the teleport node service and configuration file.
   min_ansible_version: 2.9
-
   platforms:
     - name: EL
       versions:
         - 8
-
   galaxy_tags:
     - system
     - teleport
-
-dependencies: []
