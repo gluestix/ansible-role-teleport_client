@@ -19,10 +19,14 @@
   - teleport_availalbe.rc > 1
   - teleport_availalbe.rc < 0
 
-- name: Adding Teleport repo
-  ansible.builtin.command: dnf config-manager --add-repo https://rpm.releases.teleport.dev/teleport.repo
-  when: teleport_availalbe.stdout == ""
-  notify: Remove teleport repo
+- name: Add Teleport repo
+  ansible.builtin.yum_repository:
+    name: teleport
+    description: Teleport Enterprise YUM repo
+    baseurl: https://rpm.releases.teleport.dev/
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://rpm.releases.teleport.dev/RPM-GPG-KEY-teleport
 
 # may need to change this to
 # dnf --enablerepo teleport install "{{ teleport_package_name }}"
