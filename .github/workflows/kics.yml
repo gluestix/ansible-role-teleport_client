@@ -34,7 +34,7 @@ jobs:
           path: 'gluestix.teleport_client'
 
       - name: run kics Scan
-        uses: checkmarx/kics-github-action@v1.3
+        uses: Checkmarx/kics-github-action@v1.5
         with:
           # scanning directory: ./tasks/
           path: 'tasks'
