@@ -1,6 +1,6 @@
 # Ansible Role: Teleport Client
 
-[![CI](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml/badge.svg)](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml)
+[![CI](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml/badge.svg)](https://github.com/gluestix/ansible-role-teleport-client/actions/workflows/ci.yml) [![KICS](https://github.com/gluestix/ansible-role-teleport_client/actions/workflows/kics.yml/badge.svg)](https://github.com/gluestix/ansible-role-teleport_client/actions/workflows/kics.yml)
 
 An Ansible role that installs and configures [Teleport](https://goteleport.com/) SSH server access on EL 8.
 
