@@ -8,6 +8,15 @@
     teleport_package_name: "teleport.x86_64"
   when: teleport_version == "latest"
 
+- name: Get status of Teleport service
+  ansible.builtin.systemd:
+    name: teleport.service
+  register: teleport_service_status
+
+- name: Output value of se for visual verificiation [skip]
+  ansible.builtin.debug:
+    var: teleport_service_status.status.StandardError
+
 # This is here b/c some users may choose to serve Teleport out through
 # Red Hat Satellite, so they can control which version is installed that way
 # and so we should not add the public facing teleport repo.
@@ -44,10 +53,24 @@
     owner: root
     group: root
     mode: '0600'
-    force: true
-  notify:
-    - Restart teleport
-    - Start teleport
+  when: teleport_service_status.status.StandardError
+
+- name: Restart teleport
+  become: true
+  ansible.builtin.systemd:
+    name: teleport.service
+    state: restarted
+    daemon_reload: true
+    enabled: true
+  when: teleport_service_status.status.StandardError|int != 4
+  changed_when: False
+
+- name: Start teleport
+  ansible.builtin.systemd:
+    name: teleport.service
+    state: started
+    enabled: true
+  when: teleport_service_status.status.StandardError|int == 4
 
 - name: Get firewall status
   ansible.builtin.systemd:

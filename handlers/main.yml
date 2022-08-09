@@ -7,16 +7,16 @@
   become: true
   ansible.builtin.command: firewall-cmd --reload
 
-- name: Restart teleport
-  become: true
-  ansible.builtin.systemd:
-    name: teleport.service
-    state: restarted
-    daemon_reload: true
-    enabled: true
+# - name: Restart teleport
+#   become: true
+#   ansible.builtin.systemd:
+#     name: teleport.service
+#     state: restarted
+#     daemon_reload: true
+#     enabled: true
 
-- name: Start teleport
-  ansible.builtin.systemd:
-    name: teleport.service
-    state: started
-    enabled: true
+# - name: Start teleport
+#   ansible.builtin.systemd:
+#     name: teleport.service
+#     state: started
+#     enabled: true
