@@ -63,6 +63,7 @@
     daemon_reload: true
     enabled: true
   when: teleport_service_status.status.StandardError|int != 4
+  changed_when: False
 
 - name: Start teleport
   ansible.builtin.systemd:
