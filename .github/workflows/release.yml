@@ -13,7 +13,7 @@ name: Release
 
 defaults:
   run:
-    working-directory: 'gluestix.teleport_client'
+    working-directory: 'loganmimaroglu.teleport_client'
 
 jobs:
 
